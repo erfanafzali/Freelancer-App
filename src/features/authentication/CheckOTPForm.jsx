@@ -1,16 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
+import { useMutation } from "@tanstack/react-query";
+import { checkOtp } from "../../services/authServices";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { HiArrowRight } from "react-icons/hi";
 
-function CheckOTPForm() {
+const RESEND_TIME = 90;
+function CheckOTPForm({ phoneNumber, onBack, onReSendOtp }) {
   const [otp, setOtp] = useState("");
+  const [time, setTime] = useState(RESEND_TIME);
+  const navigate = useNavigate();
+
+  const { data, isPending, error, mutateAsync } = useMutation({
+    mutationFn: checkOtp,
+  });
+
+  useEffect(() => {
+    const timer = time > 0 && setInterval(() => setTime((t) => t - 1), 1000);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [time]);
+
+  const checkOtpHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const { user, message } = await mutateAsync({ phoneNumber, otp });
+      toast.success(message);
+      if (user.isActive) {
+        //push to panel base on role
+        // if (user.role === "OWNER") navigate("/ownner");
+        // if (user.role === "FREELANCER") navigate("/freelancer");
+      } else {
+        navigate("/complete-profile");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
 
   return (
     <div className="w-full py-8 flex justify-center items-center">
       <div className="w-full md:max-w-screen-md space-y-4">
-        <form className="w-full flex flex-col justify-center items-center space-y-3 ">
-          <p className="font-bold text-sm sm:text-base md:text-lg mb-4">
-            کد تایید را وارد کنید
-          </p>
+        <form
+          onSubmit={checkOtpHandler}
+          className="w-full flex flex-col justify-center items-center space-y-3 ">
+          <div className="w-full flex justify-between items-center pb-4">
+            <button
+              onClick={onBack}
+              className="p-2 rounded-full bg-blue-500 text-white  hover:bg-blue-300 transition-all duration-300">
+              <HiArrowRight />
+            </button>
+            <p className="font-bold text-lg md:text-xl lg:text-2xl mb-4 text-blue-700">
+              کد تایید را وارد کنید:
+            </p>
+            <span></span>
+          </div>
           <OtpInput
             value={otp}
             onChange={setOtp}
@@ -30,8 +76,21 @@ function CheckOTPForm() {
               borderRadius: "0.5rem",
             }}
           />
+          <div className="mt-4 w-full text-sm px-2 text-slate-600">
+            {time > 0 ? (
+              <p>({time}) ثانیه تا ارسال مجدد کد</p>
+            ) : (
+              <button
+                onClick={onReSendOtp}
+                className="px-4 py-1 rounded-lg bg-orange-500 text-white hover:bg-orange-300 transition-all duration-300">
+                ارسال مجدد کد تایید
+              </button>
+            )}
+          </div>
         </form>
-        <button className="btn w-full py-2">تایید</button>
+        <button type="submit" className="btn w-full py-2">
+          تایید
+        </button>
       </div>
     </div>
   );

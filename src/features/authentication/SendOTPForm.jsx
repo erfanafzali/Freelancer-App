@@ -1,45 +1,30 @@
 import { useState } from "react";
 import TextField from "../../ui/TextField";
-import { useMutation } from "@tanstack/react-query";
 
-import { getOtp } from "./../../services/authServices";
-import { toast } from "react-hot-toast";
+import Loading from "../../ui/Loading";
 
-function SendOTPForm() {
-  const [phoneNumber, setPhoneNumber] = useState("");
-
-  const { isPending, error, data, mutateAsync } = useMutation({
-    mutationFn: getOtp,
-  });
-
-  const sendOtpHandler = async (e) => {
-    e.preventDefault();
-    try {
-      const data = await mutateAsync({ phoneNumber });
-      console.log(data);
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
-  // useQuery ==> get
-  // useMutation ==> post put delete push
-
+function SendOTPForm({ isSendingOtp, phoneNumber, onChange, onSubmit }) {
   return (
     <div className="w-full py-8 flex justify-center items-center">
       <div className="w-full md:max-w-screen-md">
         <form
           className="w-full flex flex-col justify-center items-center space-y-3"
-          onSubmit={sendOtpHandler}>
+          onSubmit={onSubmit}>
           <TextField
             name="phonenumber"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={onChange}
             label="شماره موبایل:"
           />
-          <button type="submit" className="btn py-2">
-            ارسال کد تایید
-          </button>
+          <div className="w-full ">
+            {isSendingOtp ? (
+              <Loading />
+            ) : (
+              <button type="submit" className="btn py-2">
+                ارسال کد تایید
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>

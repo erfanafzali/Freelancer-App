@@ -6,8 +6,9 @@ import { toast } from "react-hot-toast";
 import { getOtp } from "../../services/authServices";
 
 function AuthContainer() {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1); // اولین گام
   const [phoneNumber, setPhoneNumber] = useState("");
+
   const {
     isPending: isSendingOtp,
     mutateAsync,
@@ -20,15 +21,12 @@ function AuthContainer() {
     e.preventDefault();
     try {
       const data = await mutateAsync({ phoneNumber });
-      setStep(2);
+      setStep(2); // تغییر گام به 2 برای نمایش فرم تایید کد
       toast.success(data.message);
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
   };
-
-  // useQuery ==> get
-  // useMutation ==> post put delete push
 
   const renderStep = () => {
     switch (step) {
@@ -48,7 +46,7 @@ function AuthContainer() {
             otpResponse={otpResponse}
             onReSendOtp={sendOtpHandler}
             phoneNumber={phoneNumber}
-            onBack={() => setStep((s) => s - 1)}
+            onBack={() => setStep(1)} // بازگشت به گام اول
           />
         );
       default:

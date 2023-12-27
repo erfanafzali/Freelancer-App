@@ -4,9 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import { checkOtp } from "../../services/authServices";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { HiArrowRight, HiPencil, HiPencilAlt } from "react-icons/hi";
+import { HiArrowRight, HiPencilAlt } from "react-icons/hi";
 
-const RESEND_TIME = 90;
+const RESEND_TIME = 5;
+
 function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
   const [otp, setOtp] = useState("");
   const [time, setTime] = useState(RESEND_TIME);
@@ -29,9 +30,7 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
       const { user, message } = await mutateAsync({ phoneNumber, otp });
       toast.success(message);
       if (user.isActive) {
-        //push to panel base on role
-        // if (user.role === "OWNER") navigate("/ownner");
-        // if (user.role === "FREELANCER") navigate("/freelancer");
+        // ... (existing code)
       } else {
         navigate("/complete-profile");
       }
@@ -87,13 +86,13 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
               </button>
             )}
           </div>
+          <button type="submit" className="btn w-full py-2">
+            تایید
+          </button>
         </form>
-        <button type="submit" className="btn w-full py-2">
-          تایید
-        </button>
         {otpResponse && (
           <p className="text-xs text-gray-500 w-full flex justify-start items-center">
-            {otpResponse?.message}{" "}
+            {otpResponse?.message}
             <button className="text-green-600">
               <HiPencilAlt onClick={onBack} className="w-5 h-5" />
             </button>

@@ -4,10 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import { checkOtp } from "../../services/authServices";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { HiArrowRight } from "react-icons/hi";
+import { HiArrowRight, HiPencil, HiPencilAlt } from "react-icons/hi";
 
 const RESEND_TIME = 90;
-function CheckOTPForm({ phoneNumber, onBack, onReSendOtp }) {
+function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
   const [otp, setOtp] = useState("");
   const [time, setTime] = useState(RESEND_TIME);
   const navigate = useNavigate();
@@ -76,13 +76,13 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp }) {
               borderRadius: "0.5rem",
             }}
           />
-          <div className="mt-4 w-full text-sm px-2 text-slate-600">
+          <div className="mt-4 w-full text-xs px-1 text-slate-600">
             {time > 0 ? (
               <p>({time}) ثانیه تا ارسال مجدد کد</p>
             ) : (
               <button
                 onClick={onReSendOtp}
-                className="px-4 py-1 rounded-lg bg-orange-500 text-white hover:bg-orange-300 transition-all duration-300">
+                className="px-2 py-1 rounded-lg bg-green-500 text-white hover:bg-green-300 transition-all duration-300 my-2">
                 ارسال مجدد کد تایید
               </button>
             )}
@@ -91,6 +91,14 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp }) {
         <button type="submit" className="btn w-full py-2">
           تایید
         </button>
+        {otpResponse && (
+          <p className="text-xs text-gray-500 w-full flex justify-start items-center">
+            {otpResponse?.message}{" "}
+            <button className="text-green-600">
+              <HiPencilAlt onClick={onBack} className="w-5 h-5" />
+            </button>
+          </p>
+        )}
       </div>
     </div>
   );

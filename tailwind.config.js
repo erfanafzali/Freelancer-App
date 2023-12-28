@@ -61,5 +61,6 @@ export default {
     tailwindFormPlugin({
       strategy: "class",
     }),
+    
   ],
 };

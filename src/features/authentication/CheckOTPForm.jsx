@@ -5,8 +5,9 @@ import { checkOtp } from "../../services/authServices";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { HiArrowRight, HiPencilAlt } from "react-icons/hi";
+import Loading from "../../ui/Loading";
 
-const RESEND_TIME = 5;
+const RESEND_TIME = 90;
 
 function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
   const [otp, setOtp] = useState("");
@@ -28,6 +29,7 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
     e.preventDefault();
     try {
       const { user, message } = await mutateAsync({ phoneNumber, otp });
+      console.log(message);
       toast.success(message);
       if (user.isActive) {
         // ... (existing code)
@@ -40,7 +42,7 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
   };
 
   return (
-    <div className="w-full py-8 flex justify-center items-center">
+    <div className="w-full py-10 flex justify-center items-center">
       <div className="w-full md:max-w-screen-md space-y-4">
         <form
           onSubmit={checkOtpHandler}
@@ -86,9 +88,15 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
               </button>
             )}
           </div>
-          <button type="submit" className="btn w-full py-2">
-            تایید
-          </button>
+          <div className="w-full ">
+            {isPending ? (
+              <Loading />
+            ) : (
+              <button type="submit" className="btn py-2">
+                تایید
+              </button>
+            )}
+          </div>
         </form>
         {otpResponse && (
           <p className="text-xs text-gray-500 w-full flex justify-start items-center">

@@ -1,14 +1,14 @@
-function TextField({ label, name, value, onChange }) {
-  const handleInputChange = (e) => {
-    // Allow only numeric values
-    const numericValue = e.target.value.replace(/\D/g, "");
-    onChange({
-      target: {
-        name,
-        value: numericValue,
-      },
-    });
-  };
+function TextField({
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
+  maxLength,
+  style,
+  type,
+}) {
+
 
   return (
     <div className="w-full flex flex-col justify-center space-y-2">
@@ -20,14 +20,14 @@ function TextField({ label, name, value, onChange }) {
       <input
         name={name}
         value={value}
-        onChange={handleInputChange}
-        maxLength={11}
-        placeholder="شماره موبایل خود را وارد کنید"
+        onChange={onChange}
+        maxLength={maxLength}
+        placeholder={placeholder}
         id={name}
-        type="tel" // Change the type to "tel" for better mobile support
+        type={type} // Change the type to "tel" for better mobile support
         autoComplete="off"
         className="textField__input"
-        style={{ direction: "rtl" }} // Set the direction to right-to-left
+        style={style} // Set the direction to right-to-left
       />
     </div>
   );

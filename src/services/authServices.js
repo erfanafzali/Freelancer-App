@@ -9,5 +9,11 @@ export function checkOtp(data) {
 }
 
 export function completeProfile(data) {
-  return http.post("/user/complete-profile", data).then(({ data }) => data.data);
+  return http
+    .post("/user/complete-profile", data)
+    .then(({ data }) => data.data);
+}
+
+export function getUser() {
+  return http.get("/user/profile").than(({ data }) => data.data);
 }

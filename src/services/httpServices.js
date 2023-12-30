@@ -29,8 +29,6 @@ app.interceptors.response.use(
           withCredentials: true,
         });
         if (data) return app(originalConfig);
-
-        //if(data)
       } catch (error) {
         return Promise.reject(err);
       }

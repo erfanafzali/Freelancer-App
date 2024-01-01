@@ -14,7 +14,7 @@ function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
   const [time, setTime] = useState(RESEND_TIME);
   const navigate = useNavigate();
 
-  const { data, isPending, error, mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: checkOtp,
   });
 
